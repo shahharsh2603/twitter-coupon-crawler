@@ -34,6 +34,19 @@ class Utilities:
 		return ''.join(l)
 
 	@staticmethod
+	def get_shortened_url(url_name):
+
+		count = 0
+		last_seen = -1
+		# 5 is ideal length by obseravation - after that, there is almost always crap!
+		while count < 5:
+			last_seen = url_name.find('/',last_seen+1)
+			print last_seen
+			if last_seen == -1 : return url_name
+			count += 1
+		return url_name[:last_seen+1]
+
+	@staticmethod
 	def get_redirected_url(url):
 		page = urllib.urlopen(url)
 		return page.geturl()
@@ -44,6 +57,7 @@ class Utilities:
 		or 'pinterest' in url_name or 'youtube' in url_name or 'tumblr' in url_name:
 			raise Exception('Not a useful url')
 
+#print Utilities.get_shortened_url('https://www.etsy.com/listing/122724402/sabrina-girl-dress-sewing-pattern-pdf?utm_source=Twitter&utm_medium=PageTools&utm_campaign=Share:::HEARTSRAIN')
 #print cleantweet(u'\\n\\nSave 20% on LELO and PicoBong Pleasure Products\\nCoupon Code: LELOEF20\\nExpiry Date: 31 D... http://t.co/FiTyYlG4jC')
 #print 'COUPON CODE➤ NOV16'.decode('unicode_escape').encode('ascii','ignore')
 #print trimquotes("'hello'")

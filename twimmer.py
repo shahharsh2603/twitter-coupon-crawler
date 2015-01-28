@@ -51,6 +51,10 @@ class listener(StreamListener):
 			except:
 				raise BaseException("Url for tweet did not exist")
 			
+			# Get shortened url for key --> Upto 5th '/' or entire address (whichever is shorter)
+
+			url_name = Utilities.get_shortened_url(url_name)
+
 			#Get timestamp
 			timestamp = str(data['created_at'])
 
