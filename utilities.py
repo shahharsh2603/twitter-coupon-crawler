@@ -34,10 +34,15 @@ class Utilities:
 		return ''.join(l)
 
 	@staticmethod
-	def get_redirected_url(u):
-		page = urllib.urlopen(u)
+	def get_redirected_url(url):
+		page = urllib.urlopen(url)
 		return page.geturl()
 
+	@staticmethod
+	def check_url_validity(url_name):
+		if 'coupon' in url_name or 'facebook' in url_name or 'instagram' in url_name \
+		or 'pinterest' in url_name or 'youtube' in url_name or 'tumblr' in url_name:
+			raise Exception('Not a useful url')
 
 #print cleantweet(u'\\n\\nSave 20% on LELO and PicoBong Pleasure Products\\nCoupon Code: LELOEF20\\nExpiry Date: 31 D... http://t.co/FiTyYlG4jC')
 #print 'COUPON CODE➤ NOV16'.decode('unicode_escape').encode('ascii','ignore')

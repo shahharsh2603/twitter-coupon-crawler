@@ -40,11 +40,11 @@ class listener(StreamListener):
 				if len(self.recent_tweets) > 30:
 					self.recent_tweets.popitem(last=False)
 				self.recent_tweets[tweet] = True
-			
+			'''
 			print '*******'
 			print tweet
 			print '*******'
-
+			'''
 			# Get Redirected url
 			try:
 				url_name = Utilities.get_redirected_url(str(data['entities']['urls'][0]['expanded_url']))
@@ -57,8 +57,9 @@ class listener(StreamListener):
 			# Verify authenticity of website by checking if it has the word coupon
 			# If it does , assume it is not a vendor site. Maybe blog, maybe coupon site
 
-			if 'coupon' in url_name or 'facebook' in url_name or 'instagram' in url_name \
-			or 'pinterest' in url_name or 'youtube' in url_name or 'tumblr' in url_name:
+			try:
+				Utilities.check_url_validity(url_name)
+			except:
 				raise BaseException("Url was not a valid site")
 			
 			# Code to extract important information from this tweet
@@ -66,10 +67,12 @@ class listener(StreamListener):
 			e = Extraction()
 			code,date = e.extract_all(tweet)
 			if not date : date = 72
-			if code:
-				print url_name,code,date
-				print tweet
-				print '-----------------------'
+			if not code: return
+			key = url_name + ':::' + code
+			print key
+			print url_name,code,date
+			#print tweet
+			#print '-----------------------'
 
 			return True
 		except BaseException as e:
