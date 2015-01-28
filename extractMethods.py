@@ -76,3 +76,13 @@ class Extraction:
 		date = exp[-1]
 		return date
 
+	def extract_all(self,tweet):
+
+		self.set_tweet_value(tweet)
+		code = self.extract_code_regex_1()	#Coupon Code, Promo Code
+		code = self.extract_code_regex_2() if not code else code #Code :
+		code = self.extract_code_regex_3() if not code else code #Code ABCD :
+		date = self.extract_date()
+
+		return code,date
+
