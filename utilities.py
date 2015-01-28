@@ -1,4 +1,7 @@
 # -*- coding: utf-8 -*-
+
+import urllib
+
 class Utilities:
 
 	@staticmethod
@@ -29,6 +32,12 @@ class Utilities:
 				l.append(c)
 
 		return ''.join(l)
+
+	@staticmethod
+	def get_redirected_url(u):
+		page = urllib.urlopen(u)
+		return page.geturl()
+
 
 #print cleantweet(u'\\n\\nSave 20% on LELO and PicoBong Pleasure Products\\nCoupon Code: LELOEF20\\nExpiry Date: 31 D... http://t.co/FiTyYlG4jC')
 #print 'COUPON CODE➤ NOV16'.decode('unicode_escape').encode('ascii','ignore')

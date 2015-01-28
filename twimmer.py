@@ -33,24 +33,23 @@ class listener(StreamListener):
 			
 			# Get Tweet
 			tweet = Utilities.cleantweet(data['text'])
-			print '*******'
-			print tweet
-			print '*******'
+			
 			if tweet in self.recent_tweets:
 				return
 			else:
 				if len(self.recent_tweets) > 30:
 					self.recent_tweets.popitem(last=False)
 				self.recent_tweets[tweet] = True
+			
+			print '*******'
+			print tweet
+			print '*******'
 
 			# Get Redirected url
 			try:
-				page = urllib.urlopen(str(data['entities']['urls'][0]['expanded_url']))
-				url_name = page.geturl()
+				url_name = Utilities.get_redirected_url(str(data['entities']['urls'][0]['expanded_url']))
 			except:
-				print "Url for tweet did not exist"
-				print "----------------------------------------"
-				return
+				raise BaseException("Url for tweet did not exist")
 			
 			#Get timestamp
 			timestamp = str(data['created_at'])
@@ -60,8 +59,7 @@ class listener(StreamListener):
 
 			if 'coupon' in url_name or 'facebook' in url_name or 'instagram' in url_name \
 			or 'pinterest' in url_name or 'youtube' in url_name or 'tumblr' in url_name:
-				#Don't even store it in the file
-				return
+				raise BaseException("Url was not a valid site")
 			
 			# Code to extract important information from this tweet
 
