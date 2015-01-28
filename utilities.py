@@ -41,7 +41,6 @@ class Utilities:
 		# 5 is ideal length by obseravation - after that, there is almost always crap!
 		while count < 5:
 			last_seen = url_name.find('/',last_seen+1)
-			print last_seen
 			if last_seen == -1 : return url_name
 			count += 1
 		return url_name[:last_seen+1]
