@@ -10,6 +10,7 @@ from tweepy.streaming import StreamListener
 from collections import OrderedDict
 from utilities import Utilities
 from extractMethods import Extraction
+from datastore import DataStore
 
 # OAUTH 
 
@@ -66,11 +67,14 @@ class listener(StreamListener):
 
 			e = Extraction()
 			code,date = e.extract_all(tweet)
-			if not date : date = 72
+			if not date : date = 1000
 			if not code: return
 			key = url_name + ':::' + code
-			print key
+			#print key
+
+			ds = DataStore()
 			print url_name,code,date
+			ds.insert(key,url_name,code,tweet,date)
 			#print tweet
 			#print '-----------------------'
 
