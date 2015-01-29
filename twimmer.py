@@ -18,7 +18,7 @@ consumer_secret = "8yfBybYC3IwYg8hclNJPnJRghNR7jsFMDQ93Ad3ma1esmGnvWw"
 access_token = "100444884-wuvHF4Wxxnp5Sovp6zYQsN7kL4OSVFGvAWZdXXqJ"
 access_token_secret = "UVOuGNQwOBDCPnTjvvDbhYuCk3YAVhoW65qWupZ0JDo3E"
 
-words_to_track = ["coupon code","promo code"]
+words_to_track = ["coupon code","promo code","discount code"]
 
 class listener(StreamListener):
 

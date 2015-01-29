@@ -37,8 +37,8 @@ class Extraction:
 
 	def extract_code_regex_1(self):
 		#regex for coupon code and promo code
-		regex = re.compile('#?(Coupon|Promo)\s-??#?Code,?\s?:?\s?,?\*?\'?"?[A-Z0-9_-]{3,20}\'?"?',re.IGNORECASE)
-		regex2 = re.compile('#?(Coupon|Promo)\s-??#?Code,?\s?:?\s?,?\*?',re.IGNORECASE)
+		regex = re.compile('#?(Coupon|Promo|Discount)\s-??#?Code,?\s?:?\s?,?\*?\'?"?[A-Z0-9_-]{3,20}\'?"?',re.IGNORECASE)
+		regex2 = re.compile('#?(Coupon|Promo|Discount)\s-??#?Code,?\s?:?\s?,?\*?',re.IGNORECASE)
 
 		return self.extract_code(regex,regex2)
 
