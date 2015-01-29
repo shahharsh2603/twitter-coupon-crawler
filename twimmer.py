@@ -40,11 +40,7 @@ class listener(StreamListener):
 				if len(self.recent_tweets) > 30:
 					self.recent_tweets.popitem(last=False)
 				self.recent_tweets[tweet] = True
-			'''
-			print '*******'
-			print tweet
-			print '*******'
-			'''
+
 			# Get Redirected url
 			try:
 				url_name = Utilities.get_redirected_url(str(data['entities']['urls'][0]['expanded_url']))
@@ -80,9 +76,9 @@ class listener(StreamListener):
 
 			return True
 		except BaseException as e:
-			print str(e)
-			print "----------------------------------------"
-			time.sleep(5)
+			#print str(e)
+			#print "----------------------------------------"
+			time.sleep(1)
 
 	def on_error(self,status):
 		try:
