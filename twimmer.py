@@ -68,14 +68,14 @@ class listener(StreamListener):
 			e = Extraction()
 			code,date = e.extract_all(tweet)
 			if not date : date = 1000
+			else : print tweet, date
 			if not code: return
 			key = url_name + ':::' + code
 			#print key
 
 			ds = DataStore()
-			print url_name,code,date
+			#print url_name,code,date
 			ds.insert(key,url_name,code,tweet,date)
-			#print tweet
 			#print '-----------------------'
 
 			return True

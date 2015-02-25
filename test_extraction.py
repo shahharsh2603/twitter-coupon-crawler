@@ -64,7 +64,7 @@ class Extraction:
 		regExMain = re.compile('(\d+[-/\.]\d+[-/\.]\d+)')
 		exp = re.findall(regExMain,self.tweet)
 		if not exp: 
-			regExMain = re.compile('(\d+/\d+)')
+			regExMain = re.compile('(\d+{1,2}/\d+)')
 			exp = re.findall(regExMain,self.tweet)
 		if not exp:
 			regex1 = re.compile('(|Expires|before|at|on|until|thru|through|ends|exp|is)\s?(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\.?\s?\d+',re.IGNORECASE)
@@ -86,10 +86,10 @@ class Extraction:
 		print "Code Method 1 "
 		print code 
 		code = self.extract_code_regex_2() if not code else code #Code :
-		print "Code Method 1 "
+		print "Code Method 2 "
 		print code
 		code = self.extract_code_regex_3() if not code else code #Code ABCD :
-		print "Code Method 1 "
+		print "Code Method 3 "
 		print code
 		date = self.extract_date()
 
