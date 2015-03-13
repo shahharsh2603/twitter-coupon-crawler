@@ -68,7 +68,13 @@ class listener(StreamListener):
 			e = Extraction()
 			code,date = e.extract_all(tweet)
 			if not date : date = 1000
-			else : print tweet, date
+			else :
+				print "Tweet : ",
+				print tweet
+				print "Date : " , 
+				print date
+				print " --------- "
+
 			if not code: return
 			key = url_name + ':::' + code
 			#print key
@@ -82,14 +88,14 @@ class listener(StreamListener):
 		except BaseException as e:
 			#print str(e)
 			#print "----------------------------------------"
-			time.sleep(1)
+			time.sleep(2)
 
 	def on_error(self,status):
 		try:
 			print status
 		except BaseException as e:
 			print e
-			time.sleep(1)
+			time.sleep(2)
 
 
 auth = OAuthHandler(consumer_key,consumer_secret)
