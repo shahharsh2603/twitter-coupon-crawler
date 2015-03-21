@@ -41,16 +41,18 @@ class listener(StreamListener):
 				if len(self.recent_tweets) > 30:
 					self.recent_tweets.popitem(last=False)
 				self.recent_tweets[tweet] = True
+				print tweet
 
 			# Get Redirected url
 			try:
 				url_name = Utilities.get_redirected_url(str(data['entities']['urls'][0]['expanded_url']))
 			except:
+				return
 				raise BaseException("Url for tweet did not exist")
 			
 			# Get shortened url for key --> Upto 5th '/' or entire address (whichever is shorter)
 
-			url_name = Utilities.get_shortened_url(url_name)
+			url_name = Utilities.get_shortened_url(url_name).lower()
 
 			#Get timestamp
 			timestamp = str(data['created_at'])
@@ -61,23 +63,38 @@ class listener(StreamListener):
 			try:
 				Utilities.check_url_validity(url_name)
 			except:
+				return
 				raise BaseException("Url was not a valid site")
 			
 			# Code to extract important information from this tweet
 
 			e = Extraction()
 			code,date = e.extract_all(tweet)
-			if not date : date = 1000
+			if not date : date = 86400
 			else :
-				print "Tweet : ",
-				print tweet
-				print "Date : " , 
-				print date
-				print " --------- "
+				date = 86400
+				#print "Tweet : ",
+				#print tweet
+				#print "Url : ",
+				#print url_name	
+				#print "Date : " , 
+				#print date
+				#print " ----------------------------------- "
+				pass
 
-			if not code: return
+			if not code: 
+				return
+				raise BaseException("Did not have coupon code information")
+			
+			print "CODE : " + code
 			key = url_name + ':::' + code
-			#print key
+			print "KEY : " + key
+
+			print "Tweet : ",
+			print tweet
+			print "Url : ",
+			print url_name
+			#print " ----------------------------------- "
 
 			ds = DataStore()
 			#print url_name,code,date
@@ -86,8 +103,8 @@ class listener(StreamListener):
 
 			return True
 		except BaseException as e:
-			#print str(e)
-			#print "----------------------------------------"
+			print " *************** " + str(e) + " *************** "
+			print "----------------------------------------"
 			time.sleep(2)
 
 	def on_error(self,status):
@@ -97,9 +114,16 @@ class listener(StreamListener):
 			print e
 			time.sleep(2)
 
+def start_stream():
+    while True:
+        try:
+            twitterStream = Stream(auth, listener())
+            twitterStream.filter(track=words_to_track)
+        except:
+        	print " SCRIPT CRASHED "
+        	continue
 
 auth = OAuthHandler(consumer_key,consumer_secret)
 auth.set_access_token(access_token,access_token_secret) 
 
-twitterStream = Stream(auth, listener())
-twitterStream.filter(track=words_to_track)
+start_stream()
