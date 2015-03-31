@@ -155,7 +155,7 @@ class ExpirySetter:
 			else:
 				day = int(date[1])
 
-			if day > 31:
+			if day > ExpirySetter.days_in_months[month][1]:
 				# It probably is representing year and not day
 				# For example , April 2015
 				# Set april 2015 to 4-30-2015

@@ -75,12 +75,13 @@ class Extraction:
 				return ExpirySetter.setExpiryFromDate2(exp[-1])
 
 		if not exp:
-			regex1 = re.compile('(|Expires|before|at|on|until|thru|through|ends|exp|is)\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sept?(ember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\.?\s?[0-9]+',re.IGNORECASE)
-			regex2 = re.compile('(Expires|before|at|on|until|thru|through|ends|exp|is)\s?',re.IGNORECASE)
+			regex1 = re.compile('(to|Expires|before|at|on|until|thru|through|ends|exp|is|ending|exp\.)\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sept?(ember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\.?\s?[0-9]+',re.IGNORECASE)
+			regex2 = re.compile('(to|Expires|before|at|on|until|thru|through|ends|exp|is|ending|exp\.)\s?',re.IGNORECASE)
 			exp = [self.extract_code(regex1,regex2)]
 			if exp and exp[0] != None:
 				print exp
 				return ExpirySetter.setExpiryFromMonthAndDate(exp[-1])
+			
 		if exp == None or exp[0] == None:
 			#Space in front to avoid finding friday from BLACKFRIDAY
 			regExMain = re.compile('\s(tom(orrow)?|(to|2)day|(to|2)night|Monday|Tuesday|Wednesday|Thursday|Friday)',re.IGNORECASE)
@@ -107,4 +108,6 @@ class Extraction:
 		return code,date
 
 e = Extraction()
-print e.extract_all("April 1 to April 21 Shop today and get 20% off using Promo Code Easter. http://t.co/lcOgtILsjQ #weaves #loveyourhair #DemiSalon #myluv http://t.co/bXtbA1enxS")
+#print e.extract_all("April 1 to April 21 Shop today and get 20% off using Promo Code Easter. http://t.co/lcOgtILsjQ #weaves #loveyourhair #DemiSalon #myluv http://t.co/bXtbA1enxS")
+#print e.extract_all('April 1st thru April 31st Finally Its Spring 20 discount on all artwork. Use the discount code NHVPKY  http://t.co/dVx5B0x3qG')
+
