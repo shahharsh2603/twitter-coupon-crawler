@@ -53,7 +53,7 @@ class Utilities:
 	@staticmethod
 	def check_url_validity(url_name):
 		if 'coupon' in url_name or 'facebook' in url_name or 'instagram' in url_name \
-		or 'pinterest' in url_name or 'youtube' in url_name or 'tumblr' in url_name:
+		or 'pinterest' in url_name or 'youtube' in url_name or 'tumblr' in url_name or 'twitter' in url_name:
 			raise Exception('Not a useful url')
 
 	@staticmethod

@@ -19,7 +19,7 @@ consumer_secret = "8yfBybYC3IwYg8hclNJPnJRghNR7jsFMDQ93Ad3ma1esmGnvWw"
 access_token = "100444884-wuvHF4Wxxnp5Sovp6zYQsN7kL4OSVFGvAWZdXXqJ"
 access_token_secret = "UVOuGNQwOBDCPnTjvvDbhYuCk3YAVhoW65qWupZ0JDo3E"
 
-words_to_track = ["coupon code","promo code","discount code"]
+words_to_track = ["coupon code","promo code","discount code","etsy promo code","etsy coupon code"]
 
 class listener(StreamListener):
 
@@ -41,7 +41,7 @@ class listener(StreamListener):
 				if len(self.recent_tweets) > 30:
 					self.recent_tweets.popitem(last=False)
 				self.recent_tweets[tweet] = True
-				print tweet
+				#print tweet
 
 			# Get Redirected url
 			try:
@@ -70,30 +70,30 @@ class listener(StreamListener):
 
 			e = Extraction()
 			code,date = e.extract_all(tweet)
-			if not date : date = 86400
+			if not date : date = 186400
 			else :
-				date = 86400
+				print date
+				print tweet
+				print " ----------------------------------- "
+				date = 186400
 				#print "Tweet : ",
-				#print tweet
+				
 				#print "Url : ",
 				#print url_name	
-				#print "Date : " , 
-				#print date
-				#print " ----------------------------------- "
-				pass
+				#print "Date : "
 
 			if not code: 
 				return
 				raise BaseException("Did not have coupon code information")
 			
-			print "CODE : " + code
+			#print "CODE : " + code
 			key = url_name + ':::' + code
-			print "KEY : " + key
+			#print "KEY : " + key
 
-			print "Tweet : ",
-			print tweet
-			print "Url : ",
-			print url_name
+			#print "Tweet : ",
+			#print tweet
+			#print "Url : ",
+			#print url_name
 			#print " ----------------------------------- "
 
 			ds = DataStore()
@@ -103,16 +103,17 @@ class listener(StreamListener):
 
 			return True
 		except BaseException as e:
-			print " *************** " + str(e) + " *************** "
-			print "----------------------------------------"
-			time.sleep(2)
+			if e != "'text'":
+				print " *************** " + str(e) + " *************** "
+				print "----------------------------------------"
+			time.sleep(1)
 
 	def on_error(self,status):
 		try:
 			print status
 		except BaseException as e:
 			print e
-			time.sleep(2)
+			time.sleep(1)
 
 def start_stream():
     while True:
@@ -120,7 +121,7 @@ def start_stream():
             twitterStream = Stream(auth, listener())
             twitterStream.filter(track=words_to_track)
         except:
-        	print " SCRIPT CRASHED "
+        	print " Broken Connection "
         	continue
 
 auth = OAuthHandler(consumer_key,consumer_secret)

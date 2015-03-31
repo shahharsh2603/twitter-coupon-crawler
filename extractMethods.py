@@ -4,6 +4,7 @@ import pprint
 import urllib
 import stopwords
 from utilities import Utilities
+from expirySetter import ExpirySetter
 import sys
 
 class Extraction:
@@ -23,6 +24,8 @@ class Extraction:
 		#if pattern match was found, remove words 'coupon code' and extract just the code
 		answer = exp.group(0)
 		answer = ' '.join([word for word in answer.split() if word.lower() not in stopwords.stopwords])
+		if 'Expires' in answer or 'ends' in answer:
+			print answer
 
 		code = re.sub(regExRemove,'',answer)
 
@@ -58,20 +61,37 @@ class Extraction:
 
 	def extract_date(self):
 
-		regExMain = re.compile('(\d+[-/\.]\d+[-/\.]\d+)')
+		regExMain = re.compile('([0-9]+[-/\.][0-9]+[-/\.][0-9]+)')
 		exp = re.findall(regExMain,self.tweet)
-		if not exp: 
-			regExMain = re.compile('(\d+/\d+)')
-			exp = re.findall(regExMain,self.tweet)
+		if exp:
+			print exp
+			return ExpirySetter.setExpiryFromDate3(exp[-1])
+
 		if not exp:
-			regex1 = re.compile('(|Expires|before|at|on|until|thru|through|ends|exp|is)\s?(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec)\.?\s?\d+',re.IGNORECASE)
-			regex2 = re.compile('(Expires|before|at|on|until|thru|through|ends|exp|is)\s?',re.IGNORECASE) 
+			regExMain = re.compile('([0-9]+/[0-9]+)')
+			exp = re.findall(regExMain,self.tweet)
+			if exp: 
+				print exp
+				return ExpirySetter.setExpiryFromDate2(exp[-1])
+
+		if not exp:
+			regex1 = re.compile('(|Expires|before|at|on|until|thru|through|ends|exp|is)\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sept?(ember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\.?\s?[0-9]+',re.IGNORECASE)
+			regex2 = re.compile('(Expires|before|at|on|until|thru|through|ends|exp|is)\s?',re.IGNORECASE)
 			exp = [self.extract_code(regex1,regex2)]
+			if exp and exp[0] != None:
+				print exp
+				return ExpirySetter.setExpiryFromMonthAndDate(exp[-1])
 		if exp == None or exp[0] == None:
 			#Space in front to avoid finding friday from BLACKFRIDAY
-			regExMain = re.compile('\s(tomorrow|today|tonight|2day|Monday|Tuesday|Wednesday|Thursday|Friday)',re.IGNORECASE)
-			exp = re.findall(regExMain,self.tweet)
-			#if exp: print exp[-1], self.tweet
+			regExMain = re.compile('\s(tom(orrow)?|(to|2)day|(to|2)night|Monday|Tuesday|Wednesday|Thursday|Friday)',re.IGNORECASE)
+			exp = re.search(regExMain,self.tweet)
+			print "ALL : ",
+			print exp
+			if exp:
+				print exp.group(0)
+				print self.tweet
+				x = ExpirySetter.setExpiryFromKeyword(str(exp.group(0)))
+				return x
 		if not exp:return None
 		date = exp[-1]
 		return date
@@ -86,3 +106,5 @@ class Extraction:
 
 		return code,date
 
+e = Extraction()
+print e.extract_all("April 1 to April 21 Shop today and get 20% off using Promo Code Easter. http://t.co/lcOgtILsjQ #weaves #loveyourhair #DemiSalon #myluv http://t.co/bXtbA1enxS")

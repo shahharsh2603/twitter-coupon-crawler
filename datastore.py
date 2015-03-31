@@ -6,16 +6,16 @@ class DataStore:
 		self.r = redis.StrictRedis(host='localhost',port=6379,db=7)
 
 	def insert(self,key,url_name,coupon_code,tweet,time):
-		print "Entered Insert"
+		#print "Entered Insert"
 		self.r.sadd(url_name,key)
 
 		self.r.hmset(key,{'tweet':tweet,'coupon_code':coupon_code})
 		expiry_time = time
 		self.r.expire(key,expiry_time)
-		print "Successfully stored : " + url_name
-		print " ---------------------------------- "
-		print "Testing storage ......."
-		self.fetch(url_name)
+		#print "Successfully stored : " + url_name
+		#print " ---------------------------------- "
+		#print "Testing storage ......."
+		#self.fetch(url_name)
 
 	def fetch(self,url_name):
 		print "Entered fetch"
