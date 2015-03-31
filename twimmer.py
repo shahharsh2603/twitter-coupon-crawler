@@ -25,6 +25,10 @@ class listener(StreamListener):
 
 	def __init__(self):
 		self.recent_tweets = OrderedDict()
+		self.tweets_with_coupons = 0
+		self.tweets_with_dates = 0
+		self.total_expiry_time = 0
+		self.avg_expiry_time = 0
 
 	def on_data(self,data):
 		try:
@@ -35,12 +39,12 @@ class listener(StreamListener):
 			# Get Tweet
 			tweet = Utilities.cleantweet(data['text'])
 			
-			if tweet in self.recent_tweets:
+			if tweet[:70] in self.recent_tweets:
 				return
 			else:
 				if len(self.recent_tweets) > 30:
 					self.recent_tweets.popitem(last=False)
-				self.recent_tweets[tweet] = True
+				self.recent_tweets[tweet[:70]] = True
 				#print tweet
 
 			# Get Redirected url
@@ -70,32 +74,41 @@ class listener(StreamListener):
 
 			e = Extraction()
 			code,date = e.extract_all(tweet)
-			if not date : date = 186400
+			if not code: 
+				return
+				raise BaseException("Did not have coupon code information")
+			
+			self.tweets_with_coupons += 1
+			if not date : 
+				date = 176800
 			else :
+				self.tweets_with_dates += 1
+				self.total_expiry_time += date
 				print date
-				print tweet
-				print " ----------------------------------- "
-				date = 186400
+				#print tweet
+				#print " ----------------------------------- "
 				#print "Tweet : ",
 				
 				#print "Url : ",
 				#print url_name	
 				#print "Date : "
 
-			if not code: 
-				return
-				raise BaseException("Did not have coupon code information")
+			
+			print "Coupons : " + str(self.tweets_with_coupons)
+			print "Dates : " + str(self.tweets_with_dates)
+			print "Avg Expiry Time :" + str((self.total_expiry_time/(self.tweets_with_dates+1))/3600) + "hours"
+			print '--------------------------------------'
 			
 			#print "CODE : " + code
 			key = url_name + ':::' + code
 			#print "KEY : " + key
 
-			#print "Tweet : ",
-			#print tweet
+			#print "Tweet : "
+			print tweet
 			#print "Url : ",
 			#print url_name
-			#print " ----------------------------------- "
-
+			print " ----------------------------------- "
+			
 			ds = DataStore()
 			#print url_name,code,date
 			ds.insert(key,url_name,code,tweet,date)
@@ -103,7 +116,7 @@ class listener(StreamListener):
 
 			return True
 		except BaseException as e:
-			if e != "'text'":
+			if str(e) != "'text'":
 				print " *************** " + str(e) + " *************** "
 				print "----------------------------------------"
 			time.sleep(1)

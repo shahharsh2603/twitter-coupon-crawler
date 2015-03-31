@@ -61,7 +61,7 @@ class Extraction:
 
 	def extract_date(self):
 
-		regExMain = re.compile('([0-9]+[-/\.][0-9]+[-/\.][0-9]+)')
+		regExMain = re.compile('([0-9]+[-/][0-9]+[-/][0-9]+)')
 		exp = re.findall(regExMain,self.tweet)
 		if exp:
 			print exp
@@ -75,8 +75,8 @@ class Extraction:
 				return ExpirySetter.setExpiryFromDate2(exp[-1])
 
 		if not exp:
-			regex1 = re.compile('(to|Expires|before|at|on|until|thru|through|ends|exp|is|ending|exp\.)\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sept?(ember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\.?\s?[0-9]+',re.IGNORECASE)
-			regex2 = re.compile('(to|Expires|before|at|on|until|thru|through|ends|exp|is|ending|exp\.)\s?',re.IGNORECASE)
+			regex1 = re.compile('(Expires|before|at|until|thru|through|ends|exp|is|ending|exp\.|to|by)\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sept?(ember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\.?\s?[0-9]+',re.IGNORECASE)
+			regex2 = re.compile('(Expires|before|at|until|thru|through|ends|exp|is|ending|exp\.|to|by)\s?',re.IGNORECASE)
 			exp = [self.extract_code(regex1,regex2)]
 			if exp and exp[0] != None:
 				print exp
@@ -84,13 +84,13 @@ class Extraction:
 			
 		if exp == None or exp[0] == None:
 			#Space in front to avoid finding friday from BLACKFRIDAY
-			regExMain = re.compile('\s(tom(orrow)?|(to|2)day|(to|2)night|Monday|Tuesday|Wednesday|Thursday|Friday)',re.IGNORECASE)
+			regExMain = re.compile('\s(tom(orrow)?|(to|2)day|(to|2)night|Monday|Tuesday|Wednesday|Thursday|Friday)!?\.?\s?',re.IGNORECASE)
 			exp = re.search(regExMain,self.tweet)
-			print "ALL : ",
-			print exp
+			#print "ALL : ",
+			#print exp
 			if exp:
 				print exp.group(0)
-				print self.tweet
+				#print self.tweet
 				x = ExpirySetter.setExpiryFromKeyword(str(exp.group(0)))
 				return x
 		if not exp:return None
@@ -107,7 +107,10 @@ class Extraction:
 
 		return code,date
 
-e = Extraction()
-#print e.extract_all("April 1 to April 21 Shop today and get 20% off using Promo Code Easter. http://t.co/lcOgtILsjQ #weaves #loveyourhair #DemiSalon #myluv http://t.co/bXtbA1enxS")
-#print e.extract_all('April 1st thru April 31st Finally Its Spring 20 discount on all artwork. Use the discount code NHVPKY  http://t.co/dVx5B0x3qG')
+# e = Extraction()
+# print e.extract_all("Clemson Alumni Night is on April 13 at the Hornets vs. Houston Rockets game! Order by April 3 using promo code:TIGERS http://t.co/26bWDIMaej")
+# print e.extract_all('April 1st thru April 31st Finally Its Spring 20 discount on all artwork. Use the discount code NHVPKY  http://t.co/dVx5B0x3qG')
+# print e.extract_all("RT @Real_BabyLux: Get 20% off anything from http://t.co/tavYS6UKeZ with the discount code OTRA1D20 EXPIRES TODAY http://t.co/2z5SUO2oaN")
+# print e.extract_all("*VIP OFFER* Get 20% off all bookings for Friday, just enter the promo code PRYZMFRIDAY20 on checkout! http://t.co/LeojLwoIxg")
+# print e.extract_all("CCB Ticket Flash Sale running now through 11:59 PM April 1st. Tickets are $130 ($45 savings) promo code MARCHMEALS http://t.co/4tkrLteylA")
 

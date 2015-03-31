@@ -188,6 +188,18 @@ class ExpirySetter:
 			#print datestring
 			return ExpirySetter.setExpiryFromDate3(datestring)
 
+		re_k = re.compile('\s?(Mon(day)?|Tuesday|Wednesday|Thursday|Friday)',re.IGNORECASE)
+		if re_k.match(keyword):
+			current_time = datetime.now()
+			end_time = datetime(current_time.year,current_time.month,current_time.day,23,59,59)
+			count = 0 # To avoid infinite loop
+			while keyword.strip().lower() != end_time.strftime("%A").lower() and count < 8:
+				end_time += ExpirySetter.oneday
+				count += 1
+			x = int((end_time - current_time).total_seconds())
+			return x if x > 0 else None 
+
+
 #print ExpirySetter.setExpiryFromMonthAndDate('April 2015')
 #print ExpirySetter.setExpiryFromKeyword('TODAY')
 #print ExpirySetter.setExpiryFromKeyword('2MORW')
@@ -196,6 +208,10 @@ class ExpirySetter:
 #print ExpirySetter.setExpiryFromDate2('4/30')
 #print ExpirySetter.setExpiryFromDate3('4/30/15')
 #print ExpirySetter.setExpiryFromDate3('4/30/2015')
+#print ExpirySetter.setExpiryFromKeyword('tUesDaY')
+#print ExpirySetter.setExpiryFromKeyword('wednesdaY')
+#print ExpirySetter.setExpiryFromKeyword('monDaY')
+#print ExpirySetter.setExpiryFromKeyword(' thursdaY')
 '''
 print ExpirySetter.matchMonth('Jan')
 print ExpirySetter.matchMonth('feb')
