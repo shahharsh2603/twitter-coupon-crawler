@@ -39,13 +39,19 @@ class listener(StreamListener):
 			# Get Tweet
 			tweet = Utilities.cleantweet(data['text'])
 			
-			if tweet[:70] in self.recent_tweets:
+			for key in self.recent_tweets:
+				#print Utilities.similarity(key,tweet)
+				if Utilities.similarity(key,tweet) > 75:
+					return
+			'''
+			if tweet in self.recent_tweets:
 				return
 			else:
-				if len(self.recent_tweets) > 30:
-					self.recent_tweets.popitem(last=False)
-				self.recent_tweets[tweet[:70]] = True
-				#print tweet
+			'''
+			if len(self.recent_tweets) > 40:
+				self.recent_tweets.popitem(last=False)
+			self.recent_tweets[tweet] = True
+			#print tweet
 
 			# Get Redirected url
 			try:
@@ -96,6 +102,7 @@ class listener(StreamListener):
 			
 			print "Coupons : " + str(self.tweets_with_coupons)
 			print "Dates : " + str(self.tweets_with_dates)
+			print "Total Expiry Time :" + str(self.total_expiry_time/3600) + "hours"
 			print "Avg Expiry Time :" + str((self.total_expiry_time/(self.tweets_with_dates+1))/3600) + "hours"
 			print '--------------------------------------'
 			
@@ -134,7 +141,7 @@ def start_stream():
             twitterStream = Stream(auth, listener())
             twitterStream.filter(track=words_to_track)
         except:
-        	print " Broken Connection "
+        	print " Broken Connection ! Attempting to reconnect . . ."
         	continue
 
 auth = OAuthHandler(consumer_key,consumer_secret)

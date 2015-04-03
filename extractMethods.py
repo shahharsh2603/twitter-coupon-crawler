@@ -75,7 +75,7 @@ class Extraction:
 				return ExpirySetter.setExpiryFromDate2(exp[-1])
 
 		if not exp:
-			regex1 = re.compile('(Expires|before|at|until|thru|through|ends|exp|is|ending|exp\.|to|by)\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sept?(ember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\.?\s?[0-9]+',re.IGNORECASE)
+			regex1 = re.compile('(Expires|before|at|until|thru|through|ends|exp|is|ending|exp\.|to|by)\s?(Jan(uary)?|Feb(ruary)?|Mar(ch)?|Apr(il)?|May|June?|July?|Aug(ust)?|Sept?(ember)?|Oct(ober)?|Nov(ember)?|Dec(ember)?)\.?\s?[0-9]+[!\.]?',re.IGNORECASE)
 			regex2 = re.compile('(Expires|before|at|until|thru|through|ends|exp|is|ending|exp\.|to|by)\s?',re.IGNORECASE)
 			exp = [self.extract_code(regex1,regex2)]
 			if exp and exp[0] != None:
@@ -84,7 +84,7 @@ class Extraction:
 			
 		if exp == None or exp[0] == None:
 			#Space in front to avoid finding friday from BLACKFRIDAY
-			regExMain = re.compile('\s(tom(orrow)?|(to|2)day|(to|2)night|Monday|Tuesday|Wednesday|Thursday|Friday)!?\.?\s?',re.IGNORECASE)
+			regExMain = re.compile('\s(tom(orrow)?|(to|2)day|(to|2)night|Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)!?\.?\s?',re.IGNORECASE)
 			exp = re.search(regExMain,self.tweet)
 			#print "ALL : ",
 			#print exp
@@ -107,8 +107,8 @@ class Extraction:
 
 		return code,date
 
-# e = Extraction()
-# print e.extract_all("Clemson Alumni Night is on April 13 at the Hornets vs. Houston Rockets game! Order by April 3 using promo code:TIGERS http://t.co/26bWDIMaej")
+e = Extraction()
+print e.extract_all("Clemson Alumni Night is on April 13 at the Hornets vs. Houston Rockets game! Order by April 3! using promo code:TIGERS http://t.co/26bWDIMaej")
 # print e.extract_all('April 1st thru April 31st Finally Its Spring 20 discount on all artwork. Use the discount code NHVPKY  http://t.co/dVx5B0x3qG')
 # print e.extract_all("RT @Real_BabyLux: Get 20% off anything from http://t.co/tavYS6UKeZ with the discount code OTRA1D20 EXPIRES TODAY http://t.co/2z5SUO2oaN")
 # print e.extract_all("*VIP OFFER* Get 20% off all bookings for Friday, just enter the promo code PRYZMFRIDAY20 on checkout! http://t.co/LeojLwoIxg")

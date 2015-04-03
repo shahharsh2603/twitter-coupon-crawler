@@ -1,5 +1,6 @@
 from datetime import datetime
 from datetime import timedelta
+from utilities import Utilities
 import re
 
 class ExpirySetter:
@@ -130,6 +131,8 @@ class ExpirySetter:
 		current_time = datetime.now()
 		
 		date = datestring.split()
+		if not date[-1].isdigit():
+			date = date[:-1]
 
 		month = ExpirySetter.matchMonth(date[0])
 		# Getting date on the basis of regex matching the month
@@ -150,8 +153,7 @@ class ExpirySetter:
 			# If date is something like April 12-15, we want to extract 15 as day value
 			# because that is what will be the end date
 			if '-' in date[1]:
-				x = date[1].split('-')	
-				day = int(x[1])
+				x = date[1].split('-')
 			else:
 				day = int(date[1])
 
@@ -188,19 +190,30 @@ class ExpirySetter:
 			#print datestring
 			return ExpirySetter.setExpiryFromDate3(datestring)
 
-		re_k = re.compile('\s?(Mon(day)?|Tuesday|Wednesday|Thursday|Friday)',re.IGNORECASE)
+		re_k = re.compile('\s?(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday).?',re.IGNORECASE)
 		if re_k.match(keyword):
+			days = ['monday','tuesday','wednesday','thursday','friday']
+			actual_day = 'monday'
+			matchmax = Utilities.similarity(actual_day,keyword)
+			for x in days[1:]:
+				if Utilities.similarity(x,keyword) > matchmax:
+					matchmax = Utilities.similarity(x,keyword)
+					actual_day = x
+			keyword = actual_day
+
 			current_time = datetime.now()
 			end_time = datetime(current_time.year,current_time.month,current_time.day,23,59,59)
 			count = 0 # To avoid infinite loop
-			while keyword.strip().lower() != end_time.strftime("%A").lower() and count < 8:
+			#print keyword
+			while keyword != end_time.strftime("%A").lower() and count < 8:
 				end_time += ExpirySetter.oneday
 				count += 1
+			if count > 8 : return None
 			x = int((end_time - current_time).total_seconds())
 			return x if x > 0 else None 
 
 
-#print ExpirySetter.setExpiryFromMonthAndDate('April 2015')
+#print ExpirySetter.setExpiryFromMonthAndDate('April 3-5!')
 #print ExpirySetter.setExpiryFromKeyword('TODAY')
 #print ExpirySetter.setExpiryFromKeyword('2MORW')
 #print ExpirySetter.setExpiryFromMonthAndDate(u'mar 12-31')
@@ -210,7 +223,7 @@ class ExpirySetter:
 #print ExpirySetter.setExpiryFromDate3('4/30/2015')
 #print ExpirySetter.setExpiryFromKeyword('tUesDaY')
 #print ExpirySetter.setExpiryFromKeyword('wednesdaY')
-#print ExpirySetter.setExpiryFromKeyword('monDaY')
+#print ExpirySetter.setExpiryFromKeyword(' Thursday!')
 #print ExpirySetter.setExpiryFromKeyword(' thursdaY')
 '''
 print ExpirySetter.matchMonth('Jan')

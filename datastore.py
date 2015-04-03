@@ -12,7 +12,8 @@ class DataStore:
 		self.r.hmset(key,{'tweet':tweet,'coupon_code':coupon_code})
 		expiry_time = time
 		self.r.expire(key,expiry_time)
-		#print "Successfully stored : " + url_name
+		print "Database size: " + str(self.r.dbsize())
+		print "Successfully stored : " + url_name
 		#print " ---------------------------------- "
 		#print "Testing storage ......."
 		#self.fetch(url_name)

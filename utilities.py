@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import urllib
+import difflib
 
 class Utilities:
 
@@ -55,6 +56,12 @@ class Utilities:
 		if 'coupon' in url_name or 'facebook' in url_name or 'instagram' in url_name \
 		or 'pinterest' in url_name or 'youtube' in url_name or 'tumblr' in url_name or 'twitter' in url_name:
 			raise Exception('Not a useful url')
+
+
+	@staticmethod
+	def similarity(s1,s2):
+
+		return (difflib.SequenceMatcher(None,s1.lower(),s2.lower()).ratio()) * 100
 
 	@staticmethod
 	def modify_url(url_name):
