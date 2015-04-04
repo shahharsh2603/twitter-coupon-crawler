@@ -5,22 +5,59 @@ import redis
 
 app = Flask(__name__)
 
-r = redis.StrictRedis(host='localhost',port=6379,db=7)
+r = redis.StrictRedis(host='localhost',port=6379,db=9)
 
 @app.route('/',methods=['POST'])
 def get_tasks():
-	u = request.form['url']
+	u = request.form['url'].lower()
+	
 	url = Utilities.get_shortened_url(u)
-	all_urls = Utilities.modify_url(url)
+	url_3 = Utilities.get_shortened_url(u,3)
+
+	return_only_parent = False
+
+	# If url is same as parent url, return everything just for parent
+	# Dont redundantly return for parent and itself
+	if url == url_3 or url+'/' == url_3:
+			return_only_parent = True
+
 	ds = DataStore()
-	for url in all_urls:
-		result = ds.fetch(url)
-		if result == False:
-			print " Tried for url " + url
+
+	if not return_only_parent:
+
+		all_urls = Utilities.modify_url(url)
+		print all_urls
+
+		# If the same url is also a parent url, return all results of parent .
+		# And skip individual url results
+
+		for url in all_urls:
+			result = ds.fetch(url)
+			if result == False:
+				print " Tried for url " + url
+			else:
+				x = {"result":result}
+				return jsonify(x)
+
+	# If for our exact url and its modifications , nothing got returned
+
+	outer_url = "parent::" + Utilities.get_shortened_url(url,3)
+	print outer_url
+	
+	result = ds.fetch_all_from_parent(outer_url)
+	if result : 
+		x = {"result":result}
+		return jsonify(x)
+	else:
+		if outer_url[-1] == '/':
+			result = ds.fetch_all_from_parent(outer_url[:-1])
 		else:
+			result = ds.fetch_all_from_parent(outer_url + '/')
+		if result : 
 			x = {"result":result}
 			return jsonify(x)
 
+	# If there is still nothing to show
 	return 'No Response'
 
 if __name__ == '__main__':

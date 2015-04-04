@@ -38,6 +38,9 @@ class Utilities:
 	def get_shortened_url(url_name,number = 5):
 
 		count = 0
+		question_mark = url_name.find('?')
+		if question_mark != -1:
+			url_name = url_name[:question_mark]
 		last_seen = -1
 		# 5 is ideal length by obseravation - after that, there is almost always crap!
 		while count < number:
@@ -72,8 +75,8 @@ class Utilities:
 			all_urls.append(url_name+'/')
 
 		all_urls.append(Utilities.get_shortened_url(url_name,4))
-		all_urls.append(Utilities.get_shortened_url(url_name,3))
-		all_urls.append(Utilities.get_shortened_url(url_name,3)[:-1])
+		#all_urls.append(Utilities.get_shortened_url(url_name,3))
+		#all_urls.append(Utilities.get_shortened_url(url_name,3)[:-1])
 
 		return all_urls
 

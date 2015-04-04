@@ -41,7 +41,7 @@ class listener(StreamListener):
 			
 			for key in self.recent_tweets:
 				#print Utilities.similarity(key,tweet)
-				if Utilities.similarity(key,tweet) > 75:
+				if Utilities.similarity(key,tweet) > 70:
 					return
 			'''
 			if tweet in self.recent_tweets:
@@ -118,7 +118,9 @@ class listener(StreamListener):
 			
 			ds = DataStore()
 			#print url_name,code,date
-			ds.insert(key,url_name,code,tweet,date)
+			#get outer url - url uptil 3 '/'s . eg - http://www.etsy.com/
+			outer_url = "parent::"+Utilities.get_shortened_url(url_name,3)
+			ds.insert(key,url_name,code,tweet,date,outer_url)
 			#print '-----------------------'
 
 			return True
