@@ -56,7 +56,10 @@ class ExpirySetter:
 		
 		current_time = datetime.now()
 		format,separator = ExpirySetter.formatIdentifier(datestring)
-		end_time = datetime.strptime(datestring,format)
+		try:
+			end_time = datetime.strptime(datestring,format)
+		except:
+			return None
 		end_time = end_time + ExpirySetter.oneday
 		#end_time.day += 1
 
@@ -72,7 +75,10 @@ class ExpirySetter:
 		format,separator = ExpirySetter.formatIdentifier(datestring,year)
 		#print format, separator
 		#print datestring + separator + str(year)
-		end_time = datetime.strptime(datestring+separator+year,format)
+		try:
+			end_time = datetime.strptime(datestring+separator+year,format)
+		except:
+			return None
 		end_time = end_time + ExpirySetter.oneday
 
 		#Difference between expiry date and current time
@@ -129,6 +135,8 @@ class ExpirySetter:
 	def setExpiryFromMonthAndDate(datestring):
 
 		current_time = datetime.now()
+		if datestring[-1] == '!' or datestring[-1] == '.':
+			datestring = datestring[:-1]
 		
 		date = datestring.split()
 		if not date[-1].isdigit():
@@ -235,3 +243,4 @@ print ExpirySetter.setExpiryFromDate2('3/31')
 print ExpirySetter.setExpiryFromDate3('3/31/2016')
 print ExpirySetter.setExpiryFromDate3('20150325')
 '''
+print ExpirySetter.setExpiryFromMonthAndDate('april 16')

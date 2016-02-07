@@ -24,7 +24,7 @@ class Utilities:
 			return s
 
 	@staticmethod
-	def cleantweet(s):
+	def clean_tweet(s):
 		l = []
 		#s = s.decode('unicode_escape')
 		for c in  s:
@@ -81,7 +81,7 @@ class Utilities:
 		return all_urls
 
 #print Utilities.get_shortened_url('https://www.etsy.com/listing/122724402/sabrina-girl-dress-sewing-pattern-pdf?utm_source=Twitter&utm_medium=PageTools&utm_campaign=Share:::HEARTSRAIN')
-#print cleantweet(u'\\n\\nSave 20% on LELO and PicoBong Pleasure Products\\nCoupon Code: LELOEF20\\nExpiry Date: 31 D... http://t.co/FiTyYlG4jC')
+#print clean_tweet(u'\\n\\nSave 20% on LELO and PicoBong Pleasure Products\\nCoupon Code: LELOEF20\\nExpiry Date: 31 D... http://t.co/FiTyYlG4jC')
 #print 'COUPON CODE➤ NOV16'.decode('unicode_escape').encode('ascii','ignore')
 #print trimquotes("'hello'")
 #print trimquotes('"hello"')

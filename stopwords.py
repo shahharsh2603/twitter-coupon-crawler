@@ -25,5 +25,7 @@ stopwords = {
 'when' : True,
 'found' : True,
 'tonight' : True,
-'you' : True
+'you' : True,
+'gets' : True,
+'necessary' : True
 }

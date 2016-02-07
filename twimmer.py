@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import json
+import numpy
 import time
 import pprint
 import urllib
@@ -12,8 +13,7 @@ from utilities import Utilities
 from extractMethods import Extraction
 from datastore import DataStore
 
-# OAUTH 
-
+# OAUTH
 consumer_key ="2P8ti9KwJQcSlroJ61yaXJLTH"
 consumer_secret = "8yfBybYC3IwYg8hclNJPnJRghNR7jsFMDQ93Ad3ma1esmGnvWw"
 access_token = "100444884-wuvHF4Wxxnp5Sovp6zYQsN7kL4OSVFGvAWZdXXqJ"
@@ -29,16 +29,18 @@ class listener(StreamListener):
 		self.tweets_with_dates = 0
 		self.total_expiry_time = 0
 		self.avg_expiry_time = 0
+		self.tweets = 0
+		self.exp_time = []
 
 	def on_data(self,data):
 		try:
 
 			data = json.loads(data)
 			newd = {}
-			
+
 			# Get Tweet
-			tweet = Utilities.cleantweet(data['text'])
-			
+			tweet = Utilities.clean_tweet(data['text'])
+
 			for key in self.recent_tweets:
 				#print Utilities.similarity(key,tweet)
 				if Utilities.similarity(key,tweet) > 70:
@@ -48,7 +50,7 @@ class listener(StreamListener):
 				return
 			else:
 			'''
-			if len(self.recent_tweets) > 40:
+			if len(self.recent_tweets) > 50:
 				self.recent_tweets.popitem(last=False)
 			self.recent_tweets[tweet] = True
 			#print tweet
@@ -59,7 +61,7 @@ class listener(StreamListener):
 			except:
 				return
 				raise BaseException("Url for tweet did not exist")
-			
+
 			# Get shortened url for key --> Upto 5th '/' or entire address (whichever is shorter)
 
 			url_name = Utilities.get_shortened_url(url_name).lower()
@@ -75,47 +77,56 @@ class listener(StreamListener):
 			except:
 				return
 				raise BaseException("Url was not a valid site")
-			
-			# Code to extract important information from this tweet
 
+
+			with open("x.txt","a") as f:
+				f.write(tweet + '\n')
+				f.write("--------------------" + '\n')
+			# Code to extract important information from this tweet
+			#self.tweets += 1
+			#print tweet
+			#print "Tweet Number : " + str(self.tweets)
 			e = Extraction()
 			code,date = e.extract_all(tweet)
-			if not code: 
+			if not code:
+				#print " --------------- "
 				return
 				raise BaseException("Did not have coupon code information")
-			
-			self.tweets_with_coupons += 1
-			if not date : 
-				date = 176800
+
+			if not date :
+				date = 183600
 			else :
 				self.tweets_with_dates += 1
 				self.total_expiry_time += date
-				print date
-				#print tweet
+				self.exp_time.append(date/3600)
+				print self.tweets_with_dates, int(numpy.median(self.exp_time))
+				#print date
+				#print self.tweets_with_dates
+				print tweet
 				#print " ----------------------------------- "
 				#print "Tweet : ",
-				
+
 				#print "Url : ",
-				#print url_name	
+				#print url_name
 				#print "Date : "
 
-			
-			print "Coupons : " + str(self.tweets_with_coupons)
-			print "Dates : " + str(self.tweets_with_dates)
-			print "Total Expiry Time :" + str(self.total_expiry_time/3600) + "hours"
-			print "Avg Expiry Time :" + str((self.total_expiry_time/(self.tweets_with_dates+1))/3600) + "hours"
+
+			#print "Coupons : " + str(self.tweets_with_coupons)
+			#print "Dates : " + str(self.tweets_with_dates)
+			#print "Total Expiry Time :" + str(self.total_expiry_time/3600) + "hours"
+			#print "Avg Expiry Time :" + str((self.total_expiry_time/(self.tweets_with_dates+1))/3600) + "hours"
 			print '--------------------------------------'
-			
+
 			#print "CODE : " + code
 			key = url_name + ':::' + code
 			#print "KEY : " + key
 
 			#print "Tweet : "
-			print tweet
+			#print tweet
 			#print "Url : ",
 			#print url_name
-			print " ----------------------------------- "
-			
+			#print " ----------------------------------- "
+
 			ds = DataStore()
 			#print url_name,code,date
 			#get outer url - url uptil 3 '/'s . eg - http://www.etsy.com/
@@ -126,8 +137,9 @@ class listener(StreamListener):
 			return True
 		except BaseException as e:
 			if str(e) != "'text'":
-				print " *************** " + str(e) + " *************** "
-				print "----------------------------------------"
+				#print " *************** " + str(e) + " *************** "
+				#print "----------------------------------------"
+				pass
 			time.sleep(1)
 
 	def on_error(self,status):
@@ -138,15 +150,17 @@ class listener(StreamListener):
 			time.sleep(1)
 
 def start_stream():
-    while True:
-        try:
-            twitterStream = Stream(auth, listener())
-            twitterStream.filter(track=words_to_track)
-        except:
-        	print " Broken Connection ! Attempting to reconnect . . ."
-        	continue
+
+	while True:
+		try:
+			twitterStream = Stream(auth, listener())
+			twitterStream.filter(track=words_to_track)
+		except:
+			print " Broken Connection ! Attempting to reconnect . . . "
+			continue
 
 auth = OAuthHandler(consumer_key,consumer_secret)
-auth.set_access_token(access_token,access_token_secret) 
+auth.set_access_token(access_token,access_token_secret)
 
-start_stream()
+if __name__ == '__main__':
+	start_stream()

@@ -5,8 +5,6 @@ import redis
 
 app = Flask(__name__)
 
-r = redis.StrictRedis(host='localhost',port=6379,db=9)
-
 @app.route('/',methods=['POST'])
 def get_tasks():
 	u = request.form['url'].lower()

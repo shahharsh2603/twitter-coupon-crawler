@@ -3,7 +3,7 @@ import redis
 class DataStore:
 
 	def __init__(self):
-		self.r = redis.StrictRedis(host='localhost',port=6379,db=9)
+		self.r = redis.StrictRedis(host='localhost',port=6379,db=4)
 
 	def insert(self,key,url_name,coupon_code,tweet,time,outer_url):
 		#print "Entered Insert"
@@ -15,10 +15,10 @@ class DataStore:
 
 		#Add url to set of all the urls in its outer url
 		self.r.sadd(outer_url,url_name)
-		print url_name + " was added to " + outer_url
-		print "Database size: " + str(self.r.dbsize())
-		print "Successfully stored : " + url_name
-		print " ---------------------------------- "
+		#print url_name + " was added to " + outer_url
+		#print "Database size: " + str(self.r.dbsize())
+		#print "Successfully stored : " + url_name
+		#print " ---------------------------------- "
 		#print "Testing storage ......."
 		#self.fetch(url_name)
 
